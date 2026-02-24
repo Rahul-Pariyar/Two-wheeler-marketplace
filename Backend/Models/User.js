@@ -15,7 +15,8 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:[true,"Password is required"],
         min:[6,"Minimum length should be 6"],
-        max:[25,"Too long password"]
+        max:[25,"Too long password"],
+        select:false
     },
     phone:{
         type:Number,
@@ -29,6 +30,11 @@ const userSchema=new mongoose.Schema({
         type:String,
         enum:['admin','seller','buyer'],
         default:'buyer'
+    },
+    address: {
+      street: String,
+      city: String,
+      pincode: String,
     },
     isActive:{
         type:Boolean,

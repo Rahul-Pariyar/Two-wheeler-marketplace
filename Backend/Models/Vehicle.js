@@ -59,11 +59,12 @@ const vehicleSchema = new mongoose.Schema(
       type: String,
       trim: true,
       uppercase: true,
+      unique:[true,"regitrationNumber must be unique"]
     },
     description: {
       type: String,
       required: [true, 'Please add a description'],
-      maxlength: 200,
+      max: 200,
     },
     images: [
       {
@@ -105,12 +106,6 @@ const vehicleSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Create indexes for better search performance
-// vehicleSchema.index({ brand: 1, model: 1 });
-// vehicleSchema.index({ price: 1 });
-// vehicleSchema.index({ 'location.city': 1 });
-// vehicleSchema.index({ status: 1, isApproved: 1 });
 
 vehicleSchema.index({brand:1,model:1});
 vehicleSchema.index({price:1});

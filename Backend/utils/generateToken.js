@@ -7,7 +7,7 @@ export const generateAccessToken=(user)=>{
         email:user.email,
         role:user.role
     }
-    const accessToken=jwt.sign(payload,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'1min'});
+    const accessToken=jwt.sign(payload,process.env.ACCESS_TOKEN_SECRET,{expiresIn:'15min'});
     return accessToken;
 }
 

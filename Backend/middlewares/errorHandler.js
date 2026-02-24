@@ -1,4 +1,5 @@
 const globalErrorHandler=(err,req,res,next)=>{
+    console.log(err);
     const statusCode=err.statusCode||500;
 
     if(err.isOperational){
@@ -8,9 +9,9 @@ const globalErrorHandler=(err,req,res,next)=>{
         });
     }
 
-    res.status(500).json({
+    res.status(statusCode).json({
         success:false,
-        message:"Internal server error"
+        message:err.message
     });
 }
 

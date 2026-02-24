@@ -5,13 +5,13 @@ import { generateRefreshToken } from "../utils/generateToken.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone, role } = req.body;
 
   const exists = await User.findOne({ email });
   if (exists) {
     throw new ApiError("User already exists", 409);
   }
-  const user = await User.create({ name, email, password, phone });
+  const user = await User.create({ name, email, password, phone, role });
   return res.status(201).json({
     success: true,
     message: "User created successfuly!",
@@ -20,7 +20,7 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select('+password');
   if (!user) {
     throw new ApiError("User not found", 404);
   }
@@ -103,3 +103,32 @@ export const refreshTokenMethod = async (req, res) => {
     },
   });
 };
+
+
+export const getMe=async (req,res)=>{
+  const user=await User.findById(req.user.id);
+
+  return res.status(200).json({
+    success:true,
+    data:user
+  });
+}
+
+export const updateProfile=async (req,res)=>{
+  const {name,phone,address}=req.body;
+  const updatedUser=await User.findByIdAndUpdate(req.user.id,
+    {name,phone,address},
+    {new:true,runValidators:true}
+  );
+
+  if(!updatedUser){
+    return res.status(404).json({
+      success:false,
+      message:"User not found"
+    });
+  }
+  return res.status(200).json({
+    success:true,
+    message:"User Profle updated successfully!!"
+  })
+}

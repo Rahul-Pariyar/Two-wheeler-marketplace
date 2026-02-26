@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRouter from "./Routes/authRoutes.js";
 import vehicleRouter from "./Routes/vehicleRoutes.js";
+import adminRouter from "./Routes/adminRoutes.js";
 
 // dotenv.config();
 
@@ -15,7 +16,7 @@ ConnectDB();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 app.get("/",(req,res)=>{
@@ -23,7 +24,8 @@ app.get("/",(req,res)=>{
 });
 
 app.use("/auth",authRouter);
-app.use("/vehicles",vehicleRouter)
+app.use("/vehicles",vehicleRouter);
+app.use("/admin",adminRouter);
 
 app.use(globalErrorHandler);
 app.listen(process.env.PORT,()=>{

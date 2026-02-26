@@ -7,13 +7,18 @@ export const getVehicles = async (req, res) => {
   const vehicles = await Vehicle.find({
     isApproved: true,
     status: "available",
-  });
+  })
+    .populate("seller", "name email phone")
+    .sort({createdAt:-1})
+    .limit(6);
 
   return res.status(200).json({
     success: true,
     data: vehicles,
   });
 };
+
+
 
 export const getVehicleById = async (req, res) => {
   const vehicle = await Vehicle.findById(req.params.id).populate(
@@ -30,6 +35,39 @@ export const getVehicleById = async (req, res) => {
     data: vehicle,
   });
 };
+
+
+
+export const getPaginatedVehicles=async (req,res)=>{
+  const page=parseInt(req.query.page) || 1;
+  const limit=parseInt(req.query.limit) || 10;
+
+  const skip=(page-1)*limit;
+
+  const vehicles=await Vehicle.find({
+    isApproved: true,
+    status: "available",
+    })
+    .skip(skip)
+    .limit(limit);
+
+  const totalVehicles=await Vehicle.countDocuments(
+    {
+      isApproved: true,
+    status: "available"}
+  );
+  const totalPage=Math.ceil(totalVehicles/limit);
+
+  return res.status(200).json({
+    success:true,
+    data:vehicles,
+    page,
+    totalVehicles,
+    totalPage
+  });
+}
+
+
 
 export const addVehicle = async (req, res) => {
   const {
@@ -56,10 +94,10 @@ export const addVehicle = async (req, res) => {
   const uploadPromises = files.map(async (file) => {
     const result = await cloudinary.uploader.upload(file.path, {
       folder: "Bikes",
-      transformation:[
-        {height:400,width:500,crop:"fill"},
-        {fetch_format:"auto",quality:"auto"}
-      ]
+      transformation: [
+        { height: 400, width: 500, crop: "fill" },
+        { fetch_format: "auto", quality: "auto" },
+      ],
     });
 
     await fs.promises.unlink(file.path);
@@ -95,3 +133,42 @@ export const addVehicle = async (req, res) => {
     data: newVehicle,
   });
 };
+
+
+
+export const deleteVehicle=async(req,res)=>{
+  const vehicle=await Vehicle.findById(req.params.id);
+  if(!vehicle){
+    throw new ApiError("Vehicle not found",404);
+  }
+
+  if(vehicle.seller.toString()!==req.user.id.toString() && req.user.role!="admin"){
+    throw new ApiError("Not authorized to perform this operation",403);
+  }
+
+  const deletePromises=vehicle.images.map(async (img)=>{
+    await cloudinary.uploader.destroy(img.publicId);
+  });
+
+  await Promise.all(deletePromises);
+
+  await Vehicle.findByIdAndDelete(req.params.id);
+
+  return res.status(200).json({
+    success:true,
+    message:"Vehicle deleted successfully!"
+  });
+}
+
+
+
+export const myVehicle=async(req,res)=>{
+  const response=await Vehicle.find({seller:req.user.id}).sort({createdAt:-1});
+
+  return res.status(200).json({
+    success:true,
+    data:response
+  });
+}
+
+

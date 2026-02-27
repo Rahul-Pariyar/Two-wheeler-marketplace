@@ -30,6 +30,9 @@ export const getVehicleById = async (req, res) => {
     throw new ApiError("Vehicle not found", 400);
   }
 
+  vehicle.views+=1
+  await vehicle.save();
+
   return res.status(200).json({
     success: true,
     data: vehicle,

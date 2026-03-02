@@ -81,6 +81,7 @@ export const addVehicle = async (req, res) => {
     price,
     mileage,
     engineCapacity,
+    category,
     fuelType,
     condition,
     kmDriven,
@@ -121,6 +122,7 @@ export const addVehicle = async (req, res) => {
     price,
     mileage,
     engineCapacity,
+    category,
     fuelType,
     condition,
     kmDriven,
@@ -175,3 +177,16 @@ export const myVehicle=async(req,res)=>{
 }
 
 
+
+export const getByCategory=async (req,res)=>{
+  const bikes=await Vehicle.find({
+    category:req.params.category,
+    isApproved:true,
+    status:"available"
+  }).sort({createdAt:-1});
+
+  return res.status(200).json({
+    success:true,
+    data:bikes
+  });
+}

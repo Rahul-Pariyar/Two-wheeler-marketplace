@@ -1,5 +1,5 @@
 import express from "express";
-import { getVehicles,getVehicleById,addVehicle,deleteVehicle,myVehicle,getPaginatedVehicles } from "../Controllers/vehicleController.js";
+import { getByCategory, getVehicles,getVehicleById,addVehicle,deleteVehicle,myVehicle,getPaginatedVehicles } from "../Controllers/vehicleController.js";
 import { verifyToken,authorize } from "../middlewares/auth.js";
 import upload from "../middlewares/upload.js";
 import rateLimiter from "../middlewares/ratelimit.js";
@@ -13,5 +13,6 @@ router.get("/getPaginatedVehicles",rateLimiter(1,600),getPaginatedVehicles);
 router.post("/addVehicles",verifyToken,authorize('seller','admin'),rateLimiter(1,15),upload.array('images', 5),addVehicle);
 router.delete("/deleteVehicle/:id",verifyToken,authorize('seller','admin'),rateLimiter(1,15),deleteVehicle);
 router.get("/myVehicle",verifyToken,authorize('seller','admin'),rateLimiter(1,60),myVehicle);
+router.get("/getByCategory/:category",rateLimiter(1,60),getByCategory);
 
 export default router;

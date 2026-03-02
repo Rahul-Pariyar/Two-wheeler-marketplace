@@ -38,8 +38,11 @@ const vehicleSchema = new mongoose.Schema(
       min: 0
     },
     engineCapacity: {
-      type: Number,
-      required: [true, 'Please add engine capacity']
+      type: Number
+    },
+    category:{
+      type:String,
+      enum:["sports naked","sports","commuter","scooter","cruiser","dirt"]
     },
     fuelType: {
       type: String,
@@ -80,12 +83,10 @@ const vehicleSchema = new mongoose.Schema(
     ],
     location: {
       city: {
-        type: String,
-        required: true,
+        type: String
       },
       state: {
         type: String,
-        required: true,
       },
     },
     status: {
@@ -111,5 +112,6 @@ vehicleSchema.index({brand:1,model:1});
 vehicleSchema.index({price:1});
 vehicleSchema.index({'location.city':1});
 vehicleSchema.index({status:1,isApproved:1});
+vehicleSchema.index({category:1});
 
 export default mongoose.model('Vehicle', vehicleSchema);

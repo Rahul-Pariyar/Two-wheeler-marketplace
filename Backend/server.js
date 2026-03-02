@@ -7,6 +7,7 @@ import cors from "cors";
 import authRouter from "./Routes/authRoutes.js";
 import vehicleRouter from "./Routes/vehicleRoutes.js";
 import adminRouter from "./Routes/adminRoutes.js";
+import conversationRouter from "./Routes/conversationRoutes.js";
 import http from "http";
 import { socketInit } from "./Config/socketConfig.js";
 
@@ -30,6 +31,7 @@ app.get("/",(req,res)=>{
 app.use("/auth",authRouter);
 app.use("/vehicles",vehicleRouter);
 app.use("/admin",adminRouter);
+app.use("/conversations",conversationRouter);
 
 app.use(globalErrorHandler);
 server.listen(process.env.PORT,()=>{

@@ -1,18 +1,10 @@
-const globalErrorHandler=(err,req,res,next)=>{
+const globalErrorHandler = (err, req, res, next) => {
     console.log(err);
-    const statusCode=err.statusCode||500;
 
-    if(err.isOperational){
-        return res.status(statusCode).json({
-            success:false,
-            message:err.message
-        });
-    }
-
-    res.status(statusCode).json({
-        success:false,
-        message:err.message
+    res.status(err.statusCode || 500).json({
+        success: false,
+        message: err.isOperational ? err.message : "Something went wrong"
     });
-}
+};
 
 export default globalErrorHandler;

@@ -129,6 +129,7 @@ export const updateProfile=async (req,res)=>{
   }
   return res.status(200).json({
     success:true,
-    message:"User Profle updated successfully!!"
+    message:"User Profle updated successfully!!",
+    data:updatedUser
   })
 }

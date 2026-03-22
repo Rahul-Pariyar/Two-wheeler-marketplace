@@ -19,7 +19,7 @@ const userSchema=new mongoose.Schema({
         select:false
     },
     phone:{
-        type:Number,
+        type:String,
         required:true,
         match: [
         /^(97|98)\d{8}$/,

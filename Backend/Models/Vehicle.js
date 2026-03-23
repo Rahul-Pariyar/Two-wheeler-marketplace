@@ -24,9 +24,7 @@ const vehicleSchema = new mongoose.Schema(
     },
     makeYear: {
       type: Number,
-      required: [true, 'Please add a year'],
-      min: 1900,
-      max: new Date().getFullYear() + 1
+      min: 1800,
     },
     price: {
       type: Number,
@@ -50,7 +48,7 @@ const vehicleSchema = new mongoose.Schema(
     },
     condition: {
       type: String,
-      enum: ['Like new','Used'],
+      enum: ['Brand new','Like new','Used'],
       required: true,
     },
     kmDriven: {
@@ -61,7 +59,6 @@ const vehicleSchema = new mongoose.Schema(
     registrationNumber: {
       type: String,
       trim: true,
-      uppercase: true,
       unique:[true,"regitrationNumber must be unique"]
     },
     description: {

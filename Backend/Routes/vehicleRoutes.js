@@ -3,6 +3,7 @@ import { getByCategory, getVehicles,getVehicleById,addVehicle,deleteVehicle,myVe
 import { verifyToken,authorize } from "../middlewares/auth.js";
 import upload from "../middlewares/upload.js";
 import rateLimiter from "../middlewares/ratelimit.js";
+import { vehicleValidator } from "../middlewares/validator.js";
 
 const router=express.Router();
 
@@ -10,7 +11,7 @@ router.get("/getVehicles",rateLimiter(1,60),getVehicles);
 router.get("/getVehicles/:id",rateLimiter(1,60),getVehicleById);
 router.get("/getPaginatedVehicles",rateLimiter(1,600),getPaginatedVehicles);
 
-router.post("/addVehicles",verifyToken,authorize('seller','admin'),rateLimiter(1,15),upload.array('images', 5),addVehicle);
+router.post("/addVehicles",verifyToken,authorize('seller','admin'),rateLimiter(1,15),upload.array('images', 5),vehicleValidator,addVehicle);
 router.delete("/deleteVehicle/:id",verifyToken,authorize('seller','admin'),rateLimiter(1,15),deleteVehicle);
 router.get("/myVehicle",verifyToken,authorize('seller','admin'),rateLimiter(1,60),myVehicle);
 router.get("/getByCategory/:category",rateLimiter(1,60),getByCategory);

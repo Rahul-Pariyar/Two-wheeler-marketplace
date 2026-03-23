@@ -51,3 +51,93 @@ export const loginValidator=(req,res,next)=>{
     }
     next();
 }
+
+const vehicleSchema = joi.object({
+  title: joi.string().trim().required().messages({
+    "string.empty":'Title is required',
+    "any.required": "Title is required",
+  }),
+
+  brand: joi.string().trim().required().messages({
+    "string.empty":"Brand is required",
+    "any.required": "Brand is required",
+  }),
+
+  model: joi.string().trim().required().messages({
+    "string.empty":"model is required",
+    "any.required": "Model is required",
+  }),
+
+  makeYear: joi.number()
+    .integer()
+    .min(1800)
+    .max(new Date().getFullYear())
+    .messages({
+      "number.base": "Make year must be a number",
+      "number.max": `Make year cannot exceed ${new Date().getFullYear()}`,
+    }),
+
+  price: joi.number().min(0).required().messages({
+    "number.base": "Price must be a number",
+    "number.min": "Price cannot be negative",
+    "any.required": "Price is required",
+  }),
+
+  mileage: joi.number().min(0).messages({
+    "number.base": "Mileage must be a number",
+    "number.min": "Mileage cannot be negative",
+  }),
+
+  engineCapacity: joi.number().positive().optional().messages({
+    "number.base": "Engine capacity must be a number",
+    "number.positive": "Engine capacity must be positive",
+  }),
+
+  category: joi.string()
+    .valid("sports naked", "sports", "commuter", "scooter", "cruiser", "dirt")
+    .messages({
+      "any.only": "Category must be one of: sports naked, sports, commuter, scooter, cruiser, dirt",
+    }),
+
+  fuelType: joi.string()
+    .valid("Petrol", "Electric", "Diesel")
+    .messages({
+      "any.only": "Fuel type must be one of: Petrol, Electric, Diesel",
+    }),
+
+  condition: joi.string()
+    .valid("Brand new","Like new", "Used")
+    .required()
+    .messages({
+      "any.only": "Condition must be either 'Like new' or 'Used'",
+      "any.required": "Condition is required",
+    }),
+
+  kmDriven: joi.number().min(0).required().messages({
+    "number.base": "Kilometers driven must be a number",
+    "number.min": "Kilometers driven cannot be negative",
+    "any.required": "Kilometers driven is required",
+  }),
+
+  registrationNumber: joi.string().trim(),
+
+  description: joi.string().trim().max(200).required().messages({
+    "string.max": "Description cannot exceed 200 characters",
+    "any.required": "Description is required",
+  }),
+
+  location: joi.object({
+    city: joi.string().trim(),
+    state: joi.string().trim(),
+  })
+});
+
+export const vehicleValidator=(req,res,next)=>{
+    const {error}=vehicleSchema.validate(req.body);
+    if(error){
+        return res.status(400).json({
+            error:error.details.map(err=>err.message)
+        })
+    }
+    next();
+}
